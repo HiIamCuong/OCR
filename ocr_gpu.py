@@ -62,12 +62,13 @@ def run_ocr_no_skip(start, end):
                     f.write(f"\n\n--- TRANG {pg} ---\n\n{res}")
                     f.flush()
                     os.fsync(f.fileno())
-                print(f"✔ Đã quét xong Trang {pg} ({len(res)} ký tự)")
+                print(f"Đã quét xong Trang {pg} ({len(res)} ký tự)")
             else:
-                print(f"⚠ Trang {pg} không có nội dung đáng kể.")
+                print(f"Trang {pg} không có nội dung đáng kể.")
 
         except Exception as e:
-            print(f"❌ Trang {pg} lỗi: {str(e)}")
+            print(f"Trang {pg} lỗi: {str(e)}")
 
-# Chạy cụm trang (3, 7)
+# Chạy cụm trang [20, 45]
+
 run_ocr_no_skip(20, 45)
