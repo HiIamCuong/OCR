@@ -11,7 +11,7 @@ import gc
 # --- CẤU HÌNH ---
 PDF_PATH = "/content/HTL ebook 9 ĐHY.Dược Học Cổ Truyền (NXB Y Học 2002) - Phạm Xuân Sinh, 469 Trang.pdf"
 TEMP_DIR = "/content/temp_images"
-OUTPUT_FILE = "/content/Ban_Nhap_Soat_Loi.txt"
+OUTPUT_FILE = "/content/output.txt"
 
 # Tạo thư mục tạm
 os.makedirs(TEMP_DIR, exist_ok=True)
@@ -37,7 +37,7 @@ def preprocess_image_v2(img_path):
 def run_stable_ocr_system(start, end):
     # Kiểm tra file PDF có tồn tại không
     if not os.path.exists(PDF_PATH):
-        print(f"❌ Không tìm thấy file PDF tại: {PDF_PATH}")
+        print(f"Không tìm thấy file PDF tại: {PDF_PATH}")
         return
 
     print(f"--- Bước 1: Tách PDF từ trang {start} đến {end} (300 DPI) ---")
@@ -45,7 +45,7 @@ def run_stable_ocr_system(start, end):
     # Xóa ảnh cũ
     os.system(f"rm -rf {TEMP_DIR}/*")
     
-    # Sử dụng pdftoppm (từ gói poppler-utils) cực nhanh và ít tốn RAM
+    # Sử dụng pdftoppm (từ gói poppler-utils) nhanh và ít tốn RAM
     # %03d giúp sắp xếp thứ tự file chính xác 001, 002...
     os.system(f"pdftoppm -f {start} -l {end} -r 300 '{PDF_PATH}' {TEMP_DIR}/page")
 
@@ -67,7 +67,7 @@ def run_stable_ocr_system(start, end):
             
             # Cấu hình OCR: 
             # --psm 3: Tự động phân tích bố cục trang sách
-            # --oem 3: Sử dụng engine LSTM tốt nhất hiện nay
+            # --oem 3: Sử dụng engine LSTM
             custom_config = r'--oem 3 --psm 3'
             text = pytesseract.image_to_string(processed_img, lang='vie', config=custom_config)
 
@@ -75,7 +75,7 @@ def run_stable_ocr_system(start, end):
             with open(OUTPUT_FILE, "a", encoding="utf-8") as f:
                 f.write(f"\n\n{'='*30}\n TRANG {current_pg}\n{'='*30}\n\n{text}")
             
-            print(f"✅ Hoàn thành trang {current_pg}")
+            print(f"Hoàn thành trang {current_pg}")
             
             # Giải phóng bộ nhớ ngay lập tức
             os.remove(img_path)
@@ -83,10 +83,11 @@ def run_stable_ocr_system(start, end):
             gc.collect()
 
         except Exception as e:
-            print(f"❌ Lỗi tại trang {current_pg}: {e}")
+            print(f"Lỗi tại trang {current_pg}: {e}")
 
     print(f"\n--- XONG! Kết quả lưu tại: {OUTPUT_FILE} ---")
 
 # --- THỰC THI ---
 # Bạn có thể chia nhỏ để chạy, ví dụ 20 đến 50
+
 run_stable_ocr_system(20, 25)
