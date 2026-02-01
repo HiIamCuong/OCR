@@ -88,6 +88,7 @@ def run_stable_ocr_system(start, end):
     print(f"\n--- XONG! Kết quả lưu tại: {OUTPUT_FILE} ---")
 
 # --- THỰC THI ---
-# Bạn có thể chia nhỏ để chạy, ví dụ 20 đến 50
+# Bạn có thể chia nhỏ để chạy, ví dụ 200 đến 201
 
-run_stable_ocr_system(20, 25)
+run_stable_ocr_system(200, 201)
+
